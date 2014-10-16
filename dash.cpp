@@ -1,6 +1,7 @@
-// dash.cpp : main project file.
-
-#include "stdafx.h"
+/* dash.cpp : main project file.
+Used to create and display the main window of the dashboard.
+Only displays a quick protoype of what the final app will look like.
+*/
 #include "Form1.h"
 #include "Manager.h"
 
