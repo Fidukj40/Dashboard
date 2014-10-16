@@ -1,3 +1,9 @@
+/*
+*This is the window that will allow doctors to customize their grid.
+*Will have checkboxes to pick which tests they want to seen as having been done, and 
+*then supply a date range in which having the test done would be acceptable.
+* A default date range should be picked should the doctor not provide one.
+*/
 #pragma once
 
 namespace dash {
@@ -77,7 +83,7 @@ namespace dash {
 			this->comboBox6 = (gcnew System::Windows::Forms::ComboBox());
 			this->SuspendLayout();
 			// 
-			// checkBox1
+			// checkBox1 - Cat scan test
 			// 
 			this->checkBox1->AutoSize = true;
 			this->checkBox1->Checked = true;
@@ -89,7 +95,7 @@ namespace dash {
 			this->checkBox1->Text = L"Cat Scan";
 			this->checkBox1->UseVisualStyleBackColor = true;
 			// 
-			// checkBox2
+			// checkBox2- ER visit
 			// 
 			this->checkBox2->AutoSize = true;
 			this->checkBox2->Checked = true;
@@ -101,7 +107,7 @@ namespace dash {
 			this->checkBox2->Text = L"ER";
 			this->checkBox2->UseVisualStyleBackColor = true;
 			// 
-			// checkBox3
+			// checkBox3 - Hospitalization
 			// 
 			this->checkBox3->AutoSize = true;
 			this->checkBox3->Checked = true;
@@ -110,10 +116,10 @@ namespace dash {
 			this->checkBox3->Name = L"checkBox3";
 			this->checkBox3->Size = System::Drawing::Size(56, 17);
 			this->checkBox3->TabIndex = 2;
-			this->checkBox3->Text = L"Test 3";
+			this->checkBox3->Text = L"Hospitalization";
 			this->checkBox3->UseVisualStyleBackColor = true;
 			// 
-			// comboBox1
+			// comboBox1- Allows input of days
 			// 
 			this->comboBox1->FormattingEnabled = true;
 			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(30) {L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", 
@@ -126,7 +132,7 @@ namespace dash {
 			this->comboBox1->Text = L"Days";
 			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Manager::comboBox1_SelectedIndexChanged);
 			// 
-			// comboBox2
+			// comboBox2- Allows input of days
 			// 
 			this->comboBox2->FormattingEnabled = true;
 			this->comboBox2->Items->AddRange(gcnew cli::array< System::Object^  >(30) {L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", 
@@ -138,7 +144,7 @@ namespace dash {
 			this->comboBox2->TabIndex = 4;
 			this->comboBox2->Text = L"Days";
 			// 
-			// comboBox3
+			// comboBox3- Allows input of days
 			// 
 			this->comboBox3->FormattingEnabled = true;
 			this->comboBox3->Items->AddRange(gcnew cli::array< System::Object^  >(30) {L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", 
@@ -150,7 +156,7 @@ namespace dash {
 			this->comboBox3->TabIndex = 5;
 			this->comboBox3->Text = L"Days";
 			// 
-			// button1
+			// button1 -Allows user to exit manager mode and update the table
 			// 
 			this->button1->Location = System::Drawing::Point(171, 227);
 			this->button1->Name = L"button1";
@@ -160,7 +166,7 @@ namespace dash {
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &Manager::button1_Click);
 			// 
-			// comboBox4
+			// comboBox4-Alows user to pick months
 			// 
 			this->comboBox4->FormattingEnabled = true;
 			this->comboBox4->Items->AddRange(gcnew cli::array< System::Object^  >(12) {L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", 
@@ -171,7 +177,7 @@ namespace dash {
 			this->comboBox4->TabIndex = 7;
 			this->comboBox4->Text = L"Months";
 			// 
-			// comboBox5
+			// comboBox5-Alows user to pick months
 			// 
 			this->comboBox5->FormattingEnabled = true;
 			this->comboBox5->Items->AddRange(gcnew cli::array< System::Object^  >(12) {L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", 
@@ -182,7 +188,7 @@ namespace dash {
 			this->comboBox5->TabIndex = 8;
 			this->comboBox5->Text = L"Months";
 			// 
-			// comboBox6
+			// comboBox6-Alows user to pick months
 			// 
 			this->comboBox6->FormattingEnabled = true;
 			this->comboBox6->Items->AddRange(gcnew cli::array< System::Object^  >(12) {L"1", L"2", L"3", L"4", L"5", L"6", L"7", L"8", 
@@ -194,6 +200,7 @@ namespace dash {
 			this->comboBox6->Text = L"Months";
 			// 
 			// Manager
+			//Main window for the manager screen
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
@@ -218,6 +225,8 @@ namespace dash {
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 			 }
 
+//Closes the Manager screen when clicked.
+//In the future should send info to grid class to show which tests are shown.
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 			
 			// Form1^ form = gcnew Form1();
