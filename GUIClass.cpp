@@ -8,11 +8,11 @@ using namespace System::Drawing;
 public ref class GUIClass : public System::Windows::Forms::Form
 {
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
-private: static array<bool>^ options = gcnew array<bool>(3)
-	{ true, true, true};
+//private: static array<bool>^ options = gcnew array<bool>(3)
+//	{ true, true, true};
+private: static array<Object^,2>^ TestArray = gcnew array<Object^,2>(4,2);
+//private: static array<TimeSpan>^ timeRange = gcnew array<TimeSpan>(3){ TimeSpan(7,0,0,0), TimeSpan(7,0,0,0), TimeSpan(31,0,0,0)};
 
-private: static array<TimeSpan>^ timeRange = gcnew array<TimeSpan>(3){ TimeSpan(7,0,0,0), TimeSpan(7,0,0,0), TimeSpan(31,0,0,0)};
-		 
 private: System::Windows::Forms::MenuStrip^ menuStrip1;
 private:  System::Windows::Forms::ToolStripMenuItem^ menuToolStripMenuItem;
 		  private: System::Windows::Forms::ToolStripMenuItem^  visibilityToolStripMenuItem1;
@@ -20,21 +20,16 @@ private:  System::Windows::Forms::ToolStripMenuItem^ menuToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  publicModeToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  testManagerToolStripMenuItem;
 			 private: System::Windows::Forms::TextBox^  textBox1;
-			
-public:
 	
 	public:
-		 GUIClass( GUIClass^ other){
+		 GUIClass( array<Object^,2>^ tests){
+			 this->TestArray= tests;
 			 init();
 		 }
 
-	GUIClass(){
-		init();
-		
-	}
+	
 private:
 	void init(){
-		Console::WriteLine(timeRange[0].ToString());
 		this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 		this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->menuToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -95,9 +90,9 @@ private:
 		 this->dataGridView1->Columns[ 1 ]->Visible=false;
       this->dataGridView1->Columns[ 2 ]->Name = "DOB";
       this->dataGridView1->Columns[ 3 ]->Name = "Arrival Time";
-      this->dataGridView1->Columns[ 4 ]->Name = "Cat Scan";
-	    this->dataGridView1->Columns[ 5 ]->Name = "ER Visit";
-		  this->dataGridView1->Columns[ 6 ]->Name = "Hospitalization";
+	  for(int i=0;i< this->TestArray->GetUpperBound(0);i++){
+      this->dataGridView1->Columns[ i+4 ]->Name = this->TestArray[i,0]->ToString();
+	  }
 			//this->dataGridView1->TabIndex = 0;
 	
  //ADD TEST ROWS************************
@@ -175,7 +170,7 @@ dataGridView1->Rows->Add(rowI);
 		dataGridView1->PerformLayout();
 
 array<String^>^rowK = gcnew array<String^>{
-"DeM***, Bea***", "DeMarco, Beatrice", "19950122", "20140530", "09/30/2012", "", "08/20/2014"
+"DeM***, Bea***", "DeMarco, Beatrice", "19950122", "20140530", "09/30/2012", "", "8/20/2014"
 };
 dataGridView1->Rows->Add(rowK);
 		checkTests(this->dataGridView1,dataGridView1->Rows->Count-2);
@@ -201,6 +196,7 @@ dataGridView1->Rows->Add(rowM);
 dataGridView1->Rows->Add(rowN);
 		checkTests(this->dataGridView1,dataGridView1->Rows->Count-2);
 		dataGridView1->PerformLayout();
+		dataGridView1->DataSource = rowN;
 			
 //***************************************************
 	}
@@ -211,7 +207,7 @@ public:
 		 }
 
 	private: System::Void testManagerToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-		Manager^ test = gcnew Manager(this->dataGridView1, options,timeRange);
+		Manager^ test = gcnew Manager(this->dataGridView1, TestArray);
 		test->FormClosed += gcnew FormClosedEventHandler(this,&dash::GUIClass::Form1_FormClosed);
 		this->dataGridView1->Enabled=false;
 		test->ShowDialog();
@@ -255,10 +251,15 @@ private: System::Void VisibilityChanged(System::Object^  sender, System::EventAr
 		 }
 //Seperate into seperate Time calculate file if possible ***************************************
 		  DateTime^ calculateDate(System::String^ s){
+			  try{
 		int month = Convert::ToInt32( s->Substring(0,2)); 
 		int day = Convert::ToInt32(s->Substring(3,2));
 		int year= Convert::ToInt32(s->Substring(6,4));
 		return gcnew DateTime(year, month, day);
+			  }
+			  catch( Exception^ e){
+				  return nullptr;
+			  }
 
 	}
 		  void checkAll(){
@@ -284,21 +285,26 @@ private: System::Void VisibilityChanged(System::Object^  sender, System::EventAr
 		}
 		else{
 	DateTime^ date = calculateDate(dateValue->ToString());
+	if(date == nullptr)
+		{
+	grid->Rows[row_number]->Cells[i+4]->Style->ForeColor = System::Drawing::Color::Red;
+	grid->Rows[row_number]->Cells[i+4]->Style->BackColor = System::Drawing::Color::Red;
+		}
+	else{
+		
 	TimeSpan^ s  = today->Subtract(*date);
-	TimeSpan^ length = timeRange[i];
-	
+	TimeSpan^ length = safe_cast<TimeSpan^>(this->TestArray[i,1]);
 	 if(length->CompareTo(s) == 1) //length is shorter than s.
 	{
-	//Console::WriteLine("green");
 	grid->Rows[row_number]->Cells[i+4]->Style->ForeColor = System::Drawing::Color::Green;
 	grid->Rows[row_number]->Cells[i+4]->Style->BackColor = System::Drawing::Color::Green;
 	}
 	
 	else{ //Exists but not in range.
-//Console::WriteLine("yellow");
 grid->Rows[row_number]->Cells[i+4]->Style->ForeColor = System::Drawing::Color::Yellow;
 grid->Rows[row_number]->Cells[i+4]->Style->BackColor = System::Drawing::Color::Yellow;
 	}
+		}
 		}
 	}
 }
