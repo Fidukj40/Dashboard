@@ -196,7 +196,7 @@ dataGridView1->Rows->Add(rowM);
 dataGridView1->Rows->Add(rowN);
 		checkTests(this->dataGridView1,dataGridView1->Rows->Count-2);
 		dataGridView1->PerformLayout();
-		dataGridView1->DataSource = rowN;
+	//	dataGridView1->DataSource = rowN;
 			
 //***************************************************
 	}
