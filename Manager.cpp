@@ -1,7 +1,12 @@
 #pragma once
 #include <iostream>
+/**
+This form is used to allow the user to customize their dashboard.  It allows the user to show/hide tests,
+change the date range that the tests can be in,
+and change how the list is limited in size (minutes or # of people)
+Jason Fiduk
+*/
 namespace Manage {
-	
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -10,62 +15,44 @@ namespace Manage {
 	using namespace System::Drawing;
 	using namespace std;
 
-
-	
-	/// <summary>
-	/// Summary for Manager
-	/// </summary>
 	public ref class Manager : public System::Windows::Forms::Form
 	{
-		 static array<String^>^ Tests = gcnew array<String^>(3){"Cat Scan","ER Visit", "Hospitalization"};
 		private: System::Windows::Forms::DataGridView^  dashGrid;
-				 private: static array<bool>^ options;
-						   private: static array<TimeSpan>^ lengths;
+				 public:  bool ListLimiterType;
+						   public:  int ListLimiter;
 	private: array<Object^,2>^ TestArray;
-	public:
-		Manager(void)
-		{
-			InitializeComponent();
-		}
 
 	public:
-		 Manager( DataGridView^ other,array<Object^,2>^ TestArray  ){
+		/**
+		Constructor that sets all parameters to global values so they can be used than initializes the form.
+		*/
+		 Manager( DataGridView^ other,array<Object^,2>^ TestArray,  int ListLimiter, bool ListLimiterType ){
 			 dashGrid = other;
-			// this->options = options;
-			 //this->lengths = lengths;
+			 this->ListLimiter = ListLimiter;
+			 this->ListLimiterType = ListLimiterType;
 			 this->TestArray = TestArray;
 			 InitializeComponent();
 		 }
 
-	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		~Manager()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
+	
 	
 	private: System::Windows::Forms::CheckBox^  checkBox1;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::RadioButton^ radio1;
+	private: System::Windows::Forms::RadioButton^ radio2;
+	private: System::Windows::Forms::TextBox^  LimitingNumber;
 			  
-	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
-
-#pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
+	/**
+	Initializes the form
+	Goes through the test array and populates it that way.
+	In the future have the size of the screen increase for tests added, or convert to list that can be editted.
+	The ok button and list limiter options are made here too.
+	Jason Fiduk
+	*/
 		void InitializeComponent(void)
 		{
+			//Loops throught the tests and displays options for them
 			for(int i=0; i < this->TestArray->GetUpperBound(0); i++)
 			{
 				System::Windows::Forms::CheckBox^  checkBox1 = (gcnew System::Windows::Forms::CheckBox());
@@ -86,18 +73,14 @@ namespace Manage {
 			checkBox1->CheckedChanged += gcnew System::EventHandler(this, &Manager::comboBoxUncheck);
 
 			
-			
-			
 			textBox1->Location = System::Drawing::Point(150, (i*80)+1);
 			textBox1->Name = TestArray[i,0]->ToString();
 			if(!dashGrid->Columns[i+4]->Visible){
 				textBox1->Enabled = false;
 			}
-			//textBox1->SelectedItem = ((safe_cast <TimeSpan^>(TestArray[i,1]))->Days).ToString();
 			textBox1->Size = System::Drawing::Size(56, 21);
 			textBox1->TabIndex = 4;
 			textBox1->Text = ((safe_cast <TimeSpan^>(TestArray[i,1]))->Days).ToString();
-		    //comboBox1->DropDownStyle = ComboBoxStyle::DropDownList;
 
 			label1->AutoSize = true;
 			label1->Location = System::Drawing::Point(210, (i*80)+1);
@@ -111,33 +94,60 @@ namespace Manage {
 			this->Controls->Add(label1);
 
 			}
-			
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			
 
+			//radio buttions for list limiters
+			this->radio1 =gcnew System::Windows::Forms::RadioButton();
+			this->radio2 = gcnew System::Windows::Forms::RadioButton();
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->LimitingNumber= (gcnew System::Windows::Forms::TextBox());
+			
+			this->radio1->Location = System::Drawing::Point(171, 290);
+			this->radio2->Location = System::Drawing::Point(171, 315);
+			this->radio1->Text = "Minutes";
+			this->radio2->Text = "# of people";
+
+			//textbox for adding a number for the size/time limit
+			this->LimitingNumber->Location = System::Drawing::Point(110, 303);
+			this->LimitingNumber->Size = System::Drawing::Size(45, 21);
+			this->LimitingNumber->Text = System::Convert::ToString(ListLimiter);
+			if(ListLimiterType){
+				radio1->Checked = true;
+			}
+			else{
+				radio2->Checked = true;
+			}
 			//
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(171, 227);
+			this->button1->Location = System::Drawing::Point(171, 350);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(75, 23);
 			this->button1->TabIndex = 6;
 			this->button1->Text = L"OK";
+			this-> button1->DialogResult = System::Windows::Forms::DialogResult::OK;
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &Manager::button1_Click);
 			
 			this->Controls->Add(this->button1);
-			
+			this->Controls->Add(this->radio1);
+			this->Controls->Add(this->radio2);
+			this->Controls->Add(this->LimitingNumber);
+			this->AcceptButton = button1;
 			// 
 			// Manager
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(398, 262);
+			this->ClientSize = System::Drawing::Size(398, 400);
 			
 			
 		}
 #pragma endregion
+		/**
+		Called when a checkBox is unchecked or checked.  It makes it so the date range for that test cant be editted if the test
+		is turned off or allows you if its turned on.
+		Jason  Fiduk
+		*/
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 			 }
 			 private: System::Void comboBoxUncheck(System::Object^  sender, System::EventArgs^  e) {
@@ -151,20 +161,22 @@ namespace Manage {
 							 options[0]->Enabled= true;
 						 }
 					  }
-
+					  /**
+					  Called when the ok button is hit.
+					  It shows/hides columns based on the checkboxes.
+					  It updates the tests arrays date times
+					  It updates the list limiter variables to used when the thread returns to the manager function that made this form.
+					  Jason Fiduk
+					  */
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-			 Console::WriteLine(this->Controls[0]);
-			  Console::WriteLine(this->Controls->Count);
-			 for( int i = 0, v=0; i< this->Controls->Count-1;i+=3,v++)
+			 for( int i = 0, v=0; i< this->Controls->Count-4;i+=3,v++)
 			 {
 				 if(safe_cast<CheckBox^>(this->Controls[i])->Checked)
 				 {
 					 dashGrid->Columns[v+4]->Visible = true;
-					 //this->options[v]= true;
 				 }
 				 else{
 						dashGrid->Columns[v+4]->Visible = false;
-				//this->options[v] = false;
 				 }
 				 try{
 				 this->TestArray[v,1]= TimeSpan(Convert::ToInt32(safe_cast<TextBox^>(this->Controls[i+1])->Text,10),0,0,0);
@@ -173,6 +185,9 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 					 this->TestArray[v,1]= TimeSpan(7,0,0,0);
 				 }
 			 }
+			 
+				 ListLimiterType = radio1->Checked;
+			  ListLimiter =int::Parse(LimitingNumber->Text);
 			dashGrid->Enabled = true;
 			Manager::Close();
 }
