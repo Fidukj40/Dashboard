@@ -9,3 +9,5 @@ System,
 System.Data,
 System.Drawing,
 System.Windows.Forms
+
+Run MyTcpListener in a seperate project the same time as the dashboard so they can communicate 
