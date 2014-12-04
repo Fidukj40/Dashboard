@@ -1,5 +1,5 @@
-#pragma once
-#include <iostream>
+
+#include "Manager.h"
 /**
 This form is used to allow the user to customize their dashboard.  It allows the user to show/hide tests,
 change the date range that the tests can be in,
@@ -7,26 +7,14 @@ and change how the list is limited in size (minutes or # of people)
 Jason Fiduk
 */
 namespace Manage {
-	using namespace System;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
-	using namespace System::Data;
-	using namespace System::Drawing;
-	using namespace std;
 
-	public ref class Manager : public System::Windows::Forms::Form
-	{
-		private: System::Windows::Forms::DataGridView^  dashGrid;
-				 public:  bool ListLimiterType;
-						   public:  int ListLimiter;
-	private: array<Object^,2>^ TestArray;
+	
+		
 
-	public:
 		/**
 		Constructor that sets all parameters to global values so they can be used than initializes the form.
 		*/
-		 Manager( DataGridView^ other,array<Object^,2>^ TestArray,  int ListLimiter, bool ListLimiterType ){
+		 Manager::Manager( DataGridView^ other,array<Object^,2>^ TestArray,  int ListLimiter, bool ListLimiterType ){
 			 dashGrid = other;
 			 this->ListLimiter = ListLimiter;
 			 this->ListLimiterType = ListLimiterType;
@@ -34,14 +22,6 @@ namespace Manage {
 			 InitializeComponent();
 		 }
 
-	
-	
-	private: System::Windows::Forms::CheckBox^  checkBox1;
-	private: System::Windows::Forms::Button^  button1;
-	private: System::Windows::Forms::Label^  label1;
-	private: System::Windows::Forms::RadioButton^ radio1;
-	private: System::Windows::Forms::RadioButton^ radio2;
-	private: System::Windows::Forms::TextBox^  LimitingNumber;
 			  
 	/**
 	Initializes the form
@@ -50,7 +30,7 @@ namespace Manage {
 	The ok button and list limiter options are made here too.
 	Jason Fiduk
 	*/
-		void InitializeComponent(void)
+		void Manager::InitializeComponent(void)
 		{
 			//Loops throught the tests and displays options for them
 			for(int i=0; i < this->TestArray->GetUpperBound(0); i++)
@@ -148,9 +128,7 @@ namespace Manage {
 		is turned off or allows you if its turned on.
 		Jason  Fiduk
 		*/
-	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-			 }
-			 private: System::Void comboBoxUncheck(System::Object^  sender, System::EventArgs^  e) {
+			  System::Void Manager::comboBoxUncheck(System::Object^  sender, System::EventArgs^  e) {
 						  CheckBox^ clone = safe_cast<CheckBox^>(sender);
 						  array<Control^>^ options = this->Controls->Find(clone->Text,true);
 						 if(!clone->Checked)
@@ -168,7 +146,7 @@ namespace Manage {
 					  It updates the list limiter variables to used when the thread returns to the manager function that made this form.
 					  Jason Fiduk
 					  */
-private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+ System::Void Manager::button1_Click(System::Object^  sender, System::EventArgs^  e) {
 			 for( int i = 0, v=0; i< this->Controls->Count-4;i+=3,v++)
 			 {
 				 if(safe_cast<CheckBox^>(this->Controls[i])->Checked)
@@ -192,5 +170,4 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 			Manager::Close();
 }
 
-};
 }
